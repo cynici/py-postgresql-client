@@ -16,3 +16,4 @@ RUN apk --update add py-pip postgresql-client py-yaml \
  && pip install dateutils \
  && apk del build-dependencies \
  && rm -rf /var/cache/apk/*
+ADD docker-entrypoint.sh /docker-entrypoint.sh
