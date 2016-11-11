@@ -12,6 +12,7 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >>/etc/apk/rep
  && chmod +x /usr/local/bin/gosu \
  && curl -o /usr/local/bin/ez_setup.py -sSL "https://bootstrap.pypa.io/ez_setup.py" \
  && python /usr/local/bin/ez_setup.py \
+ && apk add py2-pip \
  && pip install --upgrade pip \
  && pip install --upgrade setuptools \
  && pip install flask \
