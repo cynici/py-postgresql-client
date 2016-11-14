@@ -1,19 +1,14 @@
-FROM alpine:edge
+FROM python:2
 MAINTAINER Cheewai Lai <clai@csir.co.za>
 
 ARG GOSU_VERSION=1.10
 ARG SPATIALINDEX_VER=1.8.5
 
-RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >>/etc/apk/repositories \
- && apk update \
- && apk add curl py2-pip postgresql-client py-yaml py-psycopg2 \
- && apk add --virtual build-dependencies postgresql-dev python-dev build-base \
- && apk add py-pika@testing geos@testing geos-dev@testing py-gdal@testing boost-dev@testing \
+RUN apt-get update \
+ && apt-get -y install curl postgresql-client python-yaml python-psycopg2 python-dev build-essential \
+ && apt-get -y install python-pika libgeos-dev libgdal1-dev python-gdal libspatialindex-dev \
  && curl -o /usr/local/bin/gosu -sSL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64" \
  && chmod +x /usr/local/bin/gosu \
- && curl -o /usr/local/bin/ez_setup.py -sSL "https://bootstrap.pypa.io/ez_setup.py" \
- && python /usr/local/bin/ez_setup.py \
- && apk add py2-pip \
  && pip install --upgrade pip \
  && pip install --upgrade setuptools \
  && pip install flask \
@@ -30,7 +25,6 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >>/etc/apk/rep
  && make \
  && make install \
  && pip install --upgrade rtree \
- && apk del geos-dev boost-dev \
- && apk del build-dependencies \
- && rm -rf /var/cache/apk/* /tmp/*
+ && apt-get -y remove --purge python-dev build-essential \
+ && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 ADD docker-entrypoint.sh /docker-entrypoint.sh

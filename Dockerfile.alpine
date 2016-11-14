@@ -1,0 +1,53 @@
+# On 2016-11-14
+# python -c "from shapely.geometry import shape" crashes
+#
+# Traceback (most recent call last):
+#  File "<string>", line 1, in <module>
+#  File "/usr/lib/python2.7/site-packages/shapely/geometry/__init__.py", line 4, in <module>
+#    from .base import CAP_STYLE, JOIN_STYLE
+#  File "/usr/lib/python2.7/site-packages/shapely/geometry/base.py", line 9, in <module>
+#    from shapely.coords import CoordinateSequence
+#  File "/usr/lib/python2.7/site-packages/shapely/coords.py", line 8, in <module>
+#    from shapely.geos import lgeos
+#  File "/usr/lib/python2.7/site-packages/shapely/geos.py", line 67, in <module>
+#    free = load_dll('c').free
+#  File "/usr/lib/python2.7/site-packages/shapely/geos.py", line 61, in load_dll
+#    libname, fallbacks or []))
+#OSError: Could not find lib c or load any of its variants [].
+#
+FROM alpine:edge
+MAINTAINER Cheewai Lai <clai@csir.co.za>
+
+ARG GOSU_VERSION=1.10
+ARG SPATIALINDEX_VER=1.8.5
+
+RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >>/etc/apk/repositories \
+ && apk update \
+ && apk add curl py2-pip postgresql-client py-yaml py-psycopg2 \
+ && apk add --virtual build-dependencies postgresql-dev python-dev build-base \
+ && apk add py-pika@testing geos@testing geos-dev@testing py-gdal@testing boost-dev@testing py-geos@testing \
+ && curl -o /usr/local/bin/gosu -sSL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64" \
+ && chmod +x /usr/local/bin/gosu \
+ && curl -o /usr/local/bin/ez_setup.py -sSL "https://bootstrap.pypa.io/ez_setup.py" \
+ && python /usr/local/bin/ez_setup.py \
+ && apk add py2-pip \
+ && pip install --upgrade pip \
+ && pip install --upgrade setuptools \
+ && pip install flask \
+ && pip install gevent \
+ && pip install gserver \
+ && pip install psycogreen \
+ && pip install dateutils \
+ && pip install rethinkdb \
+ && pip install shapely \
+ && curl -o /tmp/spatialindex.tgz http://download.osgeo.org/libspatialindex/spatialindex-src-${SPATIALINDEX_VER}.tar.gz \
+ && tar -C /tmp -zxf /tmp/spatialindex.tgz \
+ && cd /tmp/spatialindex-src-${SPATIALINDEX_VER} \
+ && ./configure \
+ && make \
+ && make install \
+ && pip install --upgrade rtree \
+ && apk del geos-dev boost-dev \
+ && apk del build-dependencies \
+ && rm -rf /var/cache/apk/* /tmp/*
+ADD docker-entrypoint.sh /docker-entrypoint.sh
