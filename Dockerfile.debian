@@ -23,9 +23,8 @@ RUN apt-get update \
  && ./configure \
  && make \
  && make install \
- && ldconfig
- 
- RUN pip install --upgrade rtree \
+ && ldconfig \
+ && pip install --upgrade rtree \
  && apt-get -y remove --purge python-dev build-essential \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 ADD docker-entrypoint.sh /docker-entrypoint.sh
