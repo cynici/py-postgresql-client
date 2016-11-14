@@ -1,20 +1,19 @@
-FROM python:2
+#Broken gdal
+#FROM python:2
+FROM geodata/gdal
 MAINTAINER Cheewai Lai <clai@csir.co.za>
 
 ARG GOSU_VERSION=1.10
 ARG SPATIALINDEX_VER=1.8.5
 
+USER root
 RUN apt-get update \
- && apt-get -y install curl postgresql-client python-yaml python-psycopg2 python-dev build-essential \
- && apt-get -y install python-pika libgeos-dev libgdal1-dev python-gdal libspatialindex-dev \
+ && apt-get -y install curl postgresql-client python-yaml python-psycopg2 \
+ && apt-get -y install python-pip python-pika \
  && curl -o /usr/local/bin/gosu -sSL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64" \
  && chmod +x /usr/local/bin/gosu \
  && pip install --upgrade pip \
  && pip install --upgrade setuptools \
- && pip install flask \
- && pip install gevent \
- && pip install gserver \
- && pip install psycogreen \
  && pip install dateutils \
  && pip install rethinkdb \
  && pip install shapely \
@@ -24,7 +23,9 @@ RUN apt-get update \
  && ./configure \
  && make \
  && make install \
- && pip install --upgrade rtree \
+ && ldconfig
+ 
+ RUN pip install --upgrade rtree \
  && apt-get -y remove --purge python-dev build-essential \
  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 ADD docker-entrypoint.sh /docker-entrypoint.sh
