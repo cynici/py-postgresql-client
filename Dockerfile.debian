@@ -15,6 +15,10 @@ RUN apt-get update \
  && pip install --upgrade pip \
  && pip install --upgrade setuptools \
  && pip install dateutils \
+ && pip install flask \
+ && pip install gevent \
+ && pip install gserver \
+ && pip install psycogreen \
  && pip install rethinkdb \
  && pip install shapely \
  && curl -o /tmp/spatialindex.tgz http://download.osgeo.org/libspatialindex/spatialindex-src-${SPATIALINDEX_VER}.tar.gz \
