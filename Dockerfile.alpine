@@ -40,7 +40,7 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >>/etc/apk/rep
  && pip install dateutils \
  && pip install rethinkdb \
  && pip install shapely \
- && pip install raven --upgrade \
+ && pip install blinker raven --upgrade \
  && curl -o /tmp/spatialindex.tgz http://download.osgeo.org/libspatialindex/spatialindex-src-${SPATIALINDEX_VER}.tar.gz \
  && tar -C /tmp -zxf /tmp/spatialindex.tgz \
  && cd /tmp/spatialindex-src-${SPATIALINDEX_VER} \
@@ -52,3 +52,5 @@ RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >>/etc/apk/rep
  && apk del build-dependencies \
  && rm -rf /var/cache/apk/* /tmp/*
 ADD docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod 755 /docker-entrypoint.sh \
+ && chown root.root /docker-entrypoint.sh
