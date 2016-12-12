@@ -23,7 +23,7 @@ ARG SPATIALINDEX_VER=1.8.5
 
 RUN echo '@testing http://nl.alpinelinux.org/alpine/edge/testing' >>/etc/apk/repositories \
  && apk update \
- && apk add curl py2-pip postgresql-client py-yaml py-psycopg2 rsync \
+ && apk add curl py2-pip postgresql-client py-yaml py-psycopg2 rsync ncftp \
  && apk add --virtual build-dependencies postgresql-dev python-dev build-base \
  && apk add py-pika@testing geos@testing geos-dev@testing py-gdal@testing boost-dev@testing py-geos@testing \
  && curl -o /usr/local/bin/gosu -sSL "https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-amd64" \
