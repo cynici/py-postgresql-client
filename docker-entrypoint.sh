@@ -7,4 +7,4 @@ if [ -x /usr/sbin/useradd ]; then
 else
   adduser -s /bin/false -D -h $RUNUSER_HOME -H -u $RUNUSER_UID runuser
 fi
-exec gosu runuser "$@"
+exec su-exec runuser "$@"
