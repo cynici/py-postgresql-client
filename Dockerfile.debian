@@ -5,6 +5,7 @@ LABEL maintainer "Cheewai Lai <clai@csir.co.za>"
 
 ARG SUEXEC_VER=0.2
 ARG SPATIALINDEX_VER=1.8.5
+ARG DOCKERIZE_VERSION=v0.5.0
 
 USER root
 RUN apt-get update \
@@ -16,6 +17,7 @@ RUN apt-get update \
  && cd "/tmp/su-exec-${SUEXEC_VER}" \
  && make \
  && cp -af su-exec /usr/bin/ \
+ && curl -k -fsSL https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar xfz - -C /usr/bin \
  && pip install --upgrade pip \
  && pip install --upgrade setuptools \
  && pip install dateutils \
